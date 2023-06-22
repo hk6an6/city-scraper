@@ -66,3 +66,7 @@ class CitySpider(scrapy.Spider):
         ,url=anchorSelector.attrib["href"])
       print(f'{restaurant_item.name}, {restaurant_item.stars}')
       yield restaurant_item
+    
+    # go to every page in TripAdvisor for this city
+    for next_page in response.xpath('//*[@id="EATERY_LIST_CONTENTS"]/div[2]/div/a'):
+      yield response.follow(next_page, self.parse)
