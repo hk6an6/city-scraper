@@ -27,5 +27,5 @@ pip3 install scrapy
 # Running
 ```bash
 source scrapy/bin/activate
-scrapy runspiler /.spider.py
+scrapy runspiler /.spider.py -o output.csv
 ```

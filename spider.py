@@ -64,7 +64,7 @@ class CitySpider(scrapy.Spider):
         name=titleSelector.get()
         ,stars=bubbles
         ,url=anchorSelector.attrib["href"])
-      print(f'{restaurant_item.name}, {restaurant_item.stars}')
+      #print(f'{restaurant_item.name}, {restaurant_item.stars}')
       yield restaurant_item
     
     # go to every page in TripAdvisor for this city
