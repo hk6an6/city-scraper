@@ -3,6 +3,7 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from dataclasses import dataclass
 import base64
+import re
 
 @dataclass
 class RestaurantItem:
@@ -35,8 +36,6 @@ class RestaurantSpider(CrawlSpider):
     ), callback="parse_restaurant"
     , follow=True)
     , Rule(LinkExtractor(
-      # restrict_text=(r"Next")
-      #, restrict_xpaths=('//*[@id="EATERY_LIST_CONTENTS"]/div[2]/div/a')
       restrict_xpaths=('//*[@id="EATERY_LIST_CONTENTS"]/div[2]/div')
     ))
   )
@@ -54,12 +53,15 @@ class RestaurantSpider(CrawlSpider):
     return decoded[4:-4]
   
   def extract_cuisines(self, response):
-    # response.xpath('//*/div/div/div/div/div/div[@data-tab="TABS_DETAILS"]/div/div/div/div/div/div/div[@class="AGRBq"]')[3].get()
-    # response.xpath('//*/div[@class="SrqKb"]/text()').get()
+    money = re.compile(r'\$\d+')
     cuisines = response.xpath('//*/div/div/div/div/div/div[@data-tab="TABS_DETAILS"]/div/div/div/div/div/div/div[@class="AGRBq"]')
     if (len(cuisines) >= 3):
-      return cuisines[3].get()
-    return response.xpath('//*/div[@class="SrqKb"]/text()').get()
+      return cuisines[3].css('::text').get()
+    cuisines = response.xpath('//*/div[@class="SrqKb"]/text()').get()
+    if (not money.match(cuisines)):
+      return cuisines
+    return response.xpath('//*/div[@class="SrqKb"]/text()')[1].get()
+    
 
   def parse_restaurant(self, response):
     return RestaurantItem(
