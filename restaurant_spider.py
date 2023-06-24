@@ -61,7 +61,12 @@ class RestaurantSpider(CrawlSpider):
     if (not money.match(cuisines)):
       return cuisines
     return response.xpath('//*/div[@class="SrqKb"]/text()')[1].get()
-    
+  
+  def extract_phone(self, response):
+    phone = response.css('div.f > div.IdiaP.Me > a::attr(href)')
+    if (len(phone)>0):
+      return phone[0].get()
+    return "NA"
 
   def parse_restaurant(self, response):
     return RestaurantItem(
@@ -82,5 +87,5 @@ class RestaurantSpider(CrawlSpider):
       , maps=self.decodebase64(
         response.css('div> span > a.YnKZo.Ci.Wc._S.C.FPPgD::attr(data-encoded-url)')[0].get()
       )
-      , phone=response.css('div.f > div.IdiaP.Me > a::attr(href)')[0].get()
+      , phone=self.extract_phone(response)
     )
