@@ -1,6 +1,6 @@
 # where venv is installed
 scrapy/
-
+output.csv
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
