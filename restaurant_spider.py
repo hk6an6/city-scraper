@@ -56,8 +56,13 @@ class RestaurantSpider(CrawlSpider):
     money = re.compile(r'\$\d+')
     cuisines = response.xpath('//*/div/div/div/div/div/div[@data-tab="TABS_DETAILS"]/div/div/div/div/div/div/div[@class="AGRBq"]')
     if (len(cuisines) >= 3):
-      return cuisines[3].css('::text').get()
+      try:
+        return cuisines[3].css('::text').get()
+      except IndexError:
+        return response.xpath('//div[contains(@id, "component_")]/div/div/div/div/div/div[2]/div[2]/div[2]').css('::text').get()
     cuisines = response.xpath('//*/div[@class="SrqKb"]/text()').get()
+    if (cuisines == None):
+      return 'NA'
     if (not money.match(cuisines)):
       return cuisines
     return response.xpath('//*/div[@class="SrqKb"]/text()')[1].get()
@@ -67,11 +72,18 @@ class RestaurantSpider(CrawlSpider):
     if (len(phone)>0):
       return phone[0].get()
     return "NA"
+  
+  def extract_stars(self, response):
+    try:
+      return response.css('div.QEQvp > span.ZDEqb::text')[0].get()
+    except:
+      return "0"
+
 
   def parse_restaurant(self, response):
     return RestaurantItem(
       name=response.xpath('//*/h1[1]/text()').get()
-      , stars=response.css('div.QEQvp > span.ZDEqb::text')[0].get()
+      , stars=self.extract_stars(response)
       , url=response.url
       , food=self.class_to_rating(
         response.xpath('//*/div/div/div[1]/div/div[3]/div[2]/div[1]/span[3]/span').css('::attr(class)').get()
