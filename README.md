@@ -28,7 +28,10 @@ source scrapy/bin/activate && \
 pip3 install scrapy
 ```
 
-# Running
+# Scraping restaurants for a city
+First, find the city you are looking for in tripadvisor. Then copy and paste the URL into [`CitySpier`'s "start_urls"](https://github.com/hk6an6/city-scraper/blob/47b5a7f70e69da267d0753dc8725b59556df2c9b/spider.py#L31).
+
+Finally, run and capture the outputs with:
 ```bash
 source scrapy/bin/activate
 scrapy runspiler /.spider.py -o output.csv
