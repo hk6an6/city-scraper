@@ -1,3 +1,5 @@
+Scrapes Restaurant information from Trip Advisor.
+
 # Investigating on the shell
 ```bash
 export URL="https://www.tripadvisor.com/Restaurants-g315917-Nerja_Costa_del_Sol_Province_of_Malaga_Andalucia.html" && \
